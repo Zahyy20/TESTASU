@@ -4,6 +4,17 @@
 # pergi ke root
 cd
 
+# initialisasi var
+export DEBIAN_FRONTEND=noninteractive
+OS=`uname -m`;
+MYIP=$(wget -qO- ipv4.icanhazip.com);
+MYIP2="s/xxxxxxxxx/$MYIP/g";
+MYPORT="s/85/99/g";
+
+#FIGlet In Linux
+sudo apt-get install figlet
+yum install figlet
+
 # mematikan ipv6
 echo 1 > /proc/sys/net/ipv6/conf/all/disable_ipv6
 sed -i '$ i\echo 1 > /proc/sys/net/ipv6/conf/all/disable_ipv6' /etc/rc.local
@@ -45,6 +56,12 @@ apt-file update
 # setting vnstat
 vnstat -u -i venet0
 service vnstat restart
+
+# install neofetch
+echo "deb http://dl.bintray.com/dawidd6/neofetch jessie main" | sudo tee -a /etc/apt/sources.list
+curl -L "https://bintray.com/user/downloadSubjectPublicKey?username=bintray" -o Release-neofetch.key && sudo apt-key add Release-neofetch.key && rm Release-neofetch.key
+apt-get update
+apt-get install neofetch
 
 # install screenfetch
 cd
@@ -206,12 +223,11 @@ service squid3 restart
 
 # install webmin
 cd
-wget "http://prdownloads.sourceforge.net/webadmin/webmin_1.670_all.deb"
-dpkg --install webmin_1.670_all.deb;
+wget -O webmin-current.deb "https://raw.githubusercontent.com/Zahyy20/SSH-OpenVPN/master/API/webmin-current.deb"
+dpkg -i --force-all webmin-current.deb;
 apt-get -y -f install;
-rm /root/webmin_1.670_all.deb
+rm /root/webmin-current.deb
 service webmin restart
-service vnstat restart
 
 # download script
 cd /usr/bin
@@ -292,48 +308,20 @@ rm -f install.sh
 
 # info
 clear
-echo "===============================================" | tee -a log-install.txt
-echo ""  | tee -a log-install.txt
-echo "Service"  | tee -a log-install.txt
-echo "-------"  | tee -a log-install.txt
-echo "OpenVPN  : TCP 1194 (client config : http://$MYIP/client.tar)"  | tee -a log-install.txt
-echo "OpenSSH  : 22, 143"  | tee -a log-install.txt
-echo "Dropbear : 109, 110, 443"  | tee -a log-install.txt
-echo "Squid3   : 8080 (limit to IP SSH)"  | tee -a log-install.txt
-echo "badvpn   : badvpn-udpgw port 7300"  | tee -a log-install.txt
-echo ""  | tee -a log-install.txt
-echo "Tools"  | tee -a log-install.txt
-echo "-----"  | tee -a log-install.txt
-echo "axel"  | tee -a log-install.txt
-echo "bmon"  | tee -a log-install.txt
-echo "htop"  | tee -a log-install.txt
-echo "iftop"  | tee -a log-install.txt
-echo "mtr"  | tee -a log-install.txt
-echo "nethogs"  | tee -a log-install.txt
-echo ""  | tee -a log-install.txt
-echo "Script"  | tee -a log-install.txt
-echo "------"  | tee -a log-install.txt
-echo "screenfetch"  | tee -a log-install.txt
-echo "./ps_mem.py"  | tee -a log-install.txt
-echo "./speedtest_cli.py --share"  | tee -a log-install.txt
-echo "./bench-network.sh"  | tee -a log-install.txt
-echo ""  | tee -a log-install.txt
-echo "Account Default (utk SSH dan VPN)"  | tee -a log-install.txt
-echo "---------------"  | tee -a log-install.txt
-echo "User     : soned"  | tee -a log-install.txt
-echo "Password : qweasd"  | tee -a log-install.txt
-echo ""  | tee -a log-install.txt
-echo "Fitur lain"  | tee -a log-install.txt
-echo "----------"  | tee -a log-install.txt
-echo "Webmin   : https://$MYIP:10000/"  | tee -a log-install.txt
-echo "vnstat   : http://$MYIP/vnstat/"  | tee -a log-install.txt
-echo "MRTG     : http://$MYIP/mrtg/"  | tee -a log-install.txt
-echo "Timezone : Asia/Jakarta"  | tee -a log-install.txt
-echo "Fail2Ban : [on]"  | tee -a log-install.txt
-echo "IPv6     : [off]"  | tee -a log-install.txt
-echo ""  | tee -a log-install.txt
-echo "Log Installasi --> /root/log-install.txt"  | tee -a log-install.txt
-echo ""  | tee -a log-install.txt
-echo "SILAHKAN REBOOT VPS ANDA !"  | tee -a log-install.txt
-echo ""  | tee -a log-install.txt
-echo "==============================================="  | tee -a log-install.txt
+figlet "ZAHYYSTORE"
+echo "Script WebSSH Auto Install"
+echo "OpenSSH  : 22, 143"
+echo "Dropbear : 80, 443"
+echo "Squid3   : 8080, 3128 (limit to IP SSH)"
+echo "OpenVPN  : TCP 1194 (client config : http://$MYIP:99/client.ovpn)"
+echo "Squid     :  http://$MYIP:8080"
+echo "Nginx      :  http://$MYIP:99"
+echo "Web    :  http://$MYIP:99"
+echo "Webmin   : http://$MYIP:10000/"
+echo "IPv6     : [off]"
+echo "Modified by ZAHYYSTORE"
+echo "VPS AUTO REBOOT TIAP JAM 12 MALAM"
+echo "==========================================="
+figlet "ZAHYYSTORE"
+cd
+rm -f /root/debian8.sh
