@@ -21,6 +21,13 @@ ln -fs /usr/share/zoneinfo/Asia/Jakarta /etc/localtime
 sed -i 's/AcceptEnv/#AcceptEnv/g' /etc/ssh/sshd_config
 service ssh restart
 
+# set repo
+wget -O /etc/apt/sources.list "https://raw.githubusercontent.com/Zahyy20/SSH-OpenVPN/main/API/sources.list.debian8"
+wget "https://raw.githubusercontent.com/Zahyy20/SSH-OpenVPN/main/API/dotdeb.gpg"
+wget "https://raw.githubusercontent.com/Zahyy20/SSH-OpenVPN/main/API/jcameron-key.asc"
+cat dotdeb.gpg | apt-key add -;rm dotdeb.gpg
+cat jcameron-key.asc | apt-key add -;rm jcameron-key.asc
+
 # install webserver
 apt-get -y install nginx php5-fpm php5-cli
 
@@ -265,6 +272,23 @@ cd /home/vps/public_html/
 wget -O /home/vps/public_html/myweb.tar "https://raw.githubusercontent.com/Zahyy20/SSH-OpenVPN/master/API/myweb.tar"
 cd /home/vps/public_html/
 tar xf myweb.tar
+
+# Setting web
+echo -e "\033[01;31mIP User And Pass 'ROOT' Only \033[0m"
+read -p "IP : " MyIPD
+read -p "Username : " Login
+read -p "Password : " Passwd
+MYIPS="s/xxxxxxxxx/$MyIPD/g";
+US1="s/thaivpnuser/$Login/g";
+PS2="s/thaivpnpass/$Passwd/g";
+sed -i $MYIPS /home/vps/public_html/index.php;
+sed -i $US1 /home/vps/public_html/index.php;
+sed -i $PS2 /home/vps/public_html/index.php;
+
+#RM file
+rm -f myweb.tar
+cd
+rm -f install.sh
 
 # info
 clear
